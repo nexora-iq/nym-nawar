@@ -1,0 +1,589 @@
+ <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نوار نعيم مشكور</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+
+        :root {
+            --primary: #1a1a1a;
+            --bg: #ffffff;
+            --text-dark: #2d3748;
+            --text-muted: #718096;
+            --card-bg: rgba(255, 255, 255, 0.92);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        /* === شاشة التحميل (Splash Screen) === */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #ffffff;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-out;
+            overflow: hidden;
+        }
+
+        .splash-bg-icons {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .splash-text-container {
+            z-index: 2;
+            display: flex;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .splash-text-container span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(-40px);
+            animation: fallDown 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes fallDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* === نظام الخلفية المتناسق للموقع === */
+        .bg-engineering-icons {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .eng-svg-icon {
+            position: absolute;
+            opacity: 0.15;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* === الهيكل الأساسي === */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 8%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .lang-btn {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 6px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px white;
+        }
+
+        .hero h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px white;
+        }
+
+        /* === معرض الصور (طولي - Portrait) === */
+        .carousel-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 450px; 
+            height: 550px; 
+            margin: 0 auto 50px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            background: #f8fafc;
+            direction: ltr;
+        }
+
+        .carousel-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            direction: ltr;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            object-position: center;
+            pointer-events: none;
+            image-orientation: from-image;
+        }
+
+        .dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.4);
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+
+        /* === النبذة === */
+        .about-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            margin-bottom: 50px;
+            line-height: 1.9;
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .about-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        /* === حسابات التواصل === */
+        .social-title {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+        }
+
+        .icon-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-btn svg {
+            width: 28px;
+            height: 28px;
+            fill: currentColor;
+            transition: all 0.3s ease;
+        }
+
+        .icon-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .icon-btn.insta:hover {
+            color: #E1306C;
+        }
+
+        .icon-btn.tiktok:hover {
+            color: #000000;
+            background: #f1f1f1;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        @media (max-width: 768px) {
+            .splash-text-container { font-size: 2rem; }
+            .hero h1 { font-size: 2.2rem; }
+            .carousel-wrapper { height: 450px; max-width: 90%; }
+            .about-card { padding: 25px; font-size: 1rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- شاشة التحميل (الأنيميشن) -->
+    <div id="splash-screen">
+        <div class="splash-bg-icons" id="splash-bg"></div>
+        <div class="splash-text-container" id="splash-text" dir="ltr"></div>
+    </div>
+
+    <!-- الخلفية ذات التوزيع المنظم للموقع -->
+    <div class="bg-engineering-icons" id="bg-icons"></div>
+
+    <header>
+        <div class="logo" id="logoText">نوار نعيم مشكور</div>
+        <button class="lang-btn" onclick="toggleLanguage()" id="langBtn">English</button>
+    </header>
+
+    <div class="main-container">
+
+        <div class="hero">
+            <h1 id="heroName">نوار نعيم مشكور</h1>
+            <h3 id="heroTitle">هندسة المساحة والجيوماتكس</h3>
+        </div>
+
+        <div class="carousel-wrapper" id="carousel">
+            <div class="carousel-track" id="track">
+                <!-- 5 صور كما طلبت -->
+                <div class="carousel-slide"><img src="1.jpg" alt="صورة 1"></div>
+                <div class="carousel-slide"><img src="2.jpg" alt="صورة 2"></div>
+                <div class="carousel-slide"><img src="3.jpg" alt="صورة 3"></div>
+                <div class="carousel-slide"><img src="4.jpg" alt="صورة 4"></div>
+                <div class="carousel-slide"><img src="5.jpg" alt="صورة 5"></div>
+            </div>
+            <div class="dots" id="dots-container"></div>
+        </div>
+
+        <div class="about-card">
+            <h2 id="aboutTitle">نبذة تعريفية</h2>
+            <p id="aboutDesc">
+                شغوف بعالم الخرائط والقياسات الدقيقة. أجمع بين المعرفة الهندسية المتقدمة والتطبيق العملي باستخدام أحدث أجهزة المساحة (Total Station و GPS). أطمح لتسخير مهاراتي في علم الجيوماتكس وتخطيط الأراضي لتقديم أدق البيانات والخرائط التي تُبنى عليها المشاريع الهندسية الناجحة.
+            </p>
+        </div>
+
+        <h3 class="social-title" id="socialTitle">يسعدني تواصلكم</h3>
+        <div class="social-icons">
+            <a href="https://www.instagram.com/ny_m44?igsh=MWN5bWN6NWszMDMxNw==" target="_blank" class="icon-btn insta" title="Instagram">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                </svg>
+            </a>
+            <a href="https://www.tiktok.com/@nymnwar44?_r=1&_t=ZS-97j44o8tZjQ" target="_blank" class="icon-btn tiktok" title="TikTok">
+                <svg viewBox="0 0 24 24">
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <footer id="footerText">
+        جميع الحقوق محفوظة © 2026
+    </footer>
+
+    <script>
+        // === برمجة شاشة التحميل (Splash Screen) ===
+        const splashName = "Nawar Naeem Mashkoor";
+        const splashContainer = document.getElementById('splash-text');
+        
+        splashName.split('').forEach((char, index) => {
+            let span = document.createElement('span');
+            span.innerText = char === ' ' ? '\u00A0' : char;
+            span.style.animationDelay = `${index * 0.12}s`;
+            splashContainer.appendChild(span);
+        });
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 800);
+            }, 3500);
+        });
+
+        // === الأشكال الهندسية الخاصة بتخصص هندسة المساحة ===
+        const engineeringIconsSVG = [
+            // 1. جهاز توتال ستيشن / ثيودوليت (Total Station/Theodolite)
+            `<svg viewBox="0 0 64 64" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="100%" height="100%">
+                <path d="M22 60 L32 40 L42 60" />
+                <line x1="32" y1="40" x2="32" y2="60" />
+                <rect x="26" y="24" width="12" height="16" rx="2" />
+                <rect x="20" y="26" width="24" height="6" rx="1" />
+                <circle cx="32" cy="18" r="4" />
+            </svg>`,
+            // 2. خريطة مع دبوس موقع (Map with Location Pin)
+            `<svg viewBox="0 0 64 64" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="100%" height="100%">
+                <path d="M12 20 L24 12 L40 20 L52 12 V44 L40 52 L24 44 L12 52 V20 Z" />
+                <line x1="24" y1="12" x2="24" y2="44" />
+                <line x1="40" y1="20" x2="40" y2="52" />
+                <path d="M32 30 C36 30 38 26 38 22 C38 18 36 14 32 14 C28 14 26 18 26 22 C26 26 32 30 32 30 Z" />
+                <circle cx="32" cy="22" r="2" />
+            </svg>`,
+            // 3. بوصلة اتجاهات (Compass)
+            `<svg viewBox="0 0 64 64" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="100%" height="100%">
+                <circle cx="32" cy="32" r="20" />
+                <circle cx="32" cy="32" r="16" stroke-dasharray="2 4" />
+                <path d="M32 18 L36 32 L32 46 L28 32 Z" />
+            </svg>`,
+            // 4. مسطرة / مثلث هندسي (Set Square / Ruler)
+            `<svg viewBox="0 0 64 64" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="100%" height="100%">
+                <path d="M16 52 L52 52 L16 16 Z" />
+                <path d="M24 44 L40 44 L24 28 Z" />
+                <line x1="20" y1="48" x2="20" y2="52" />
+                <line x1="28" y1="48" x2="28" y2="52" />
+                <line x1="36" y1="48" x2="36" y2="52" />
+            </svg>`
+        ];
+
+        function createEngineeringGrid(containerId, opacityValue) {
+            const container = document.getElementById(containerId);
+            const cols = 5;
+            const rows = 4;
+            const cellWidth = 100 / cols;
+            const cellHeight = 100 / rows;
+            const sizes = [70, 95, 120, 150];
+            let iconIndex = 0;
+
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    const topOffset = Math.random() * (cellHeight * 0.4);
+                    const leftOffset = Math.random() * (cellWidth * 0.4);
+                    const top = (i * cellHeight) + topOffset;
+                    const left = (j * cellWidth) + leftOffset;
+                    const tilt = (Math.random() * 30) - 15;
+                    const size = sizes[(i + j) % sizes.length];
+
+                    const iconDiv = document.createElement('div');
+                    iconDiv.className = 'eng-svg-icon';
+                    iconDiv.style.opacity = opacityValue;
+                    iconDiv.innerHTML = engineeringIconsSVG[iconIndex % engineeringIconsSVG.length];
+
+                    iconDiv.style.width = size + 'px';
+                    iconDiv.style.height = size + 'px';
+                    iconDiv.style.top = top + 'vh';
+                    iconDiv.style.left = left + 'vw';
+                    iconDiv.style.transform = `rotate(${tilt}deg)`;
+
+                    container.appendChild(iconDiv);
+                    iconIndex++;
+                }
+            }
+        }
+
+        createEngineeringGrid('bg-icons', '0.15');
+        createEngineeringGrid('splash-bg', '0.07');
+
+        // === معرض الصور (تم التعديل لـ 5 صور) ===
+        const track = document.getElementById('track');
+        const slides = Array.from(track.children);
+        const dotsContainer = document.getElementById('dots-container');
+        let currentIndex = 0;
+        let slideInterval;
+
+        slides.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        });
+        const dots = Array.from(dotsContainer.children);
+
+        function updateSlider() {
+            const offset = -(currentIndex * 100);
+            track.style.transform = `translateX(${offset}%)`;
+            dots.forEach(d => d.classList.remove('active'));
+            dots[currentIndex].classList.add('active');
+        }
+
+        function goToSlide(index) {
+            currentIndex = index;
+            updateSlider();
+            resetInterval();
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateSlider();
+        }
+
+        function resetInterval() {
+            clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 3500);
+        }
+        resetInterval();
+
+        let startX = 0;
+        let currentX = 0;
+        const carousel = document.getElementById('carousel');
+
+        carousel.addEventListener('touchstart', e => {
+            startX = e.touches[0].clientX;
+            clearInterval(slideInterval);
+        }, { passive: true });
+
+        carousel.addEventListener('touchmove', e => {
+            currentX = e.touches[0].clientX;
+        }, { passive: true });
+
+        carousel.addEventListener('touchend', () => {
+            const diffX = startX - currentX;
+            if (Math.abs(diffX) > 40) {
+                if (diffX > 0) {
+                    currentIndex = Math.min(currentIndex + 1, slides.length - 1);
+                } else {
+                    currentIndex = Math.max(currentIndex - 1, 0);
+                }
+                updateSlider();
+            }
+            resetInterval();
+        });
+
+        // === نظام الترجمة ===
+        const translations = {
+            ar: {
+                logoText: "نوار نعيم مشكور",
+                langBtn: "English",
+                heroName: "نوار نعيم مشكور",
+                heroTitle: "هندسة المساحة والجيوماتكس",
+                aboutTitle: "نبذة تعريفية",
+                aboutDesc: "شغوف بعالم الخرائط والقياسات الدقيقة. أجمع بين المعرفة الهندسية المتقدمة والتطبيق العملي باستخدام أحدث أجهزة المساحة (Total Station و GPS). أطمح لتسخير مهاراتي في علم الجيوماتكس وتخطيط الأراضي لتقديم أدق البيانات والخرائط التي تُبنى عليها المشاريع الهندسية الناجحة.",
+                socialTitle: "يسعدني تواصلكم",
+                footerText: "جميع الحقوق محفوظة © 2026",
+                dir: "rtl"
+            },
+            en: {
+                logoText: "Nawar Naeem Mashkoor",
+                langBtn: "عربي",
+                heroName: "Nawar Naeem Mashkoor",
+                heroTitle: "Surveying & Geomatics Engineering",
+                aboutTitle: "About Me",
+                aboutDesc: "Passionate about the world of maps and precise measurements. I combine advanced engineering knowledge with practical application using the latest surveying equipment (Total Station & GPS). I aspire to harness my geomatics and land planning skills to provide the most accurate data and maps for successful engineering projects.",
+                socialTitle: "Connect With Me",
+                footerText: "All Rights Reserved © 2026",
+                dir: "ltr"
+            }
+        };
+
+        let currentLang = 'ar';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'ar' ? 'en' : 'ar';
+            const t = translations[currentLang];
+
+            document.dir = t.dir;
+            document.documentElement.lang = currentLang;
+
+            document.getElementById('logoText').innerText = t.logoText;
+            document.getElementById('langBtn').innerText = t.langBtn;
+            document.getElementById('heroName').innerText = t.heroName;
+            document.getElementById('heroTitle').innerText = t.heroTitle;
+            document.getElementById('aboutTitle').innerText = t.aboutTitle;
+            document.getElementById('aboutDesc').innerText = t.aboutDesc;
+            document.getElementById('socialTitle').innerText = t.socialTitle;
+            document.getElementById('footerText').innerText = t.footerText;
+        }
+    </script>
+</body>
+
+</html>
